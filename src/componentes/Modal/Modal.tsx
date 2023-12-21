@@ -1,7 +1,7 @@
 import ModalCabecalho from "./ModalCabecalho";
 import ModalConteudo from "./ModalConteudo";
 import "./Modal.css";
-import { useCallback, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 
 interface ModalProps extends React.HTMLProps<HTMLDialogElement> {
   estaAberta: boolean;
@@ -26,6 +26,20 @@ const Modal = ({ fecharModal, estaAberta, ariaLabel, ...rest }: ModalProps) => {
       modalRef.current?.focus();
     }
   }, []);
+
+  useEffect(() => {
+    if (estaAberta) {
+      document.addEventListener("keydown", escutadorTecla);
+      document.addEventListener("focusin", capturarFoco);
+
+      modalRef.current?.focus();
+    }
+
+    return () => {
+      document.removeEventListener("keydown", escutadorTecla);
+      document.removeEventListener("focusin", capturarFoco);
+    };
+  }, [estaAberta, capturarFoco, escutadorTecla]);
 
   return (
     <>
