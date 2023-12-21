@@ -1,4 +1,4 @@
-import React from "react";
+import React, { forwardRef } from "react";
 import "./CampoDigitacao.css";
 import MensagemErro from "./MensagemErro";
 
@@ -10,19 +10,16 @@ interface CampoDigitacaoProps
   erro?: string;
 }
 
-const CampoDigitacao = ({
-  legenda,
-  id,
-  erro,
-  ...rest
-}: CampoDigitacaoProps) => {
-  return (
-    <label htmlFor={id} className="campo__texto--legenda">
-      {legenda}
-      <input className="campo__texto" id={id} {...rest} />
-      {erro && <MensagemErro mensagemErro={erro} />}
-    </label>
-  );
-};
+const CampoDigitacao = forwardRef<HTMLInputElement, CampoDigitacaoProps>(
+  ({ legenda, id, erro, ...rest }, ref) => {
+    return (
+      <label htmlFor={id} className="campo__texto--legenda">
+        {legenda}
+        <input className="campo__texto" id={id} ref={ref} {...rest} />
+        {erro && <MensagemErro mensagemErro={erro} />}
+      </label>
+    );
+  }
+);
 
 export default CampoDigitacao;
