@@ -2,16 +2,37 @@ import "./Inscricao.css";
 import Botao from "@/componentes/Botao";
 import CampoDigitacao from "@/componentes/CampoDigitacao";
 import Tipografia from "@/componentes/Tipografia";
-import { useEffect, useRef } from "react";
+import { ChangeEvent, FormEvent, useRef, useState } from "react";
 
 const Inscricao = () => {
   const campoDigitacaoRef = useRef<HTMLInputElement | null>(null);
+  const [erro, setErro] = useState("");
+  const [valorCampo, setValorCampo] = useState("");
 
-  useEffect(() => {
+  const validaCampo = () => {
     if (campoDigitacaoRef.current) {
-      campoDigitacaoRef.current.focus();
+      const valorDoCampo = campoDigitacaoRef.current.value;
+
+      if (valorDoCampo.length < 5) {
+        setErro("O campo deve ter pelo menos 5 caracteres");
+      } else {
+        setErro("");
+      }
     }
-  });
+  };
+
+  const aoMudarCampoForm = (evento: ChangeEvent<HTMLInputElement>) => {
+    setValorCampo(evento.target.value);
+    validaCampo();
+  };
+
+  const aoSubmeterForm = (e: FormEvent) => {
+    e.preventDefault();
+    validaCampo();
+    if (!erro) {
+      setValorCampo("");
+    }
+  };
 
   return (
     <section className="secao__inscricao">
@@ -23,12 +44,18 @@ const Inscricao = () => {
           Cadastre seu email em nossa newsletter e saiba dos descontos, cupons e
           novidades em primeira mão!
         </Tipografia>
-        <form noValidate className="secao__inscricao--formulario">
+        <form
+          onSubmit={aoSubmeterForm}
+          noValidate
+          className="secao__inscricao--formulario"
+        >
           <CampoDigitacao
             type="email"
             name="inscricao"
             placeholder="Digite seu melhor endereço de email"
             ref={campoDigitacaoRef}
+            onChange={aoMudarCampoForm}
+            value={valorCampo}
             style={{ width: "650px" }}
           />
           <Botao variante="primario" type="submit">
