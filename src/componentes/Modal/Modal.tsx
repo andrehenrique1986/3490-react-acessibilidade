@@ -1,6 +1,7 @@
 import ModalCabecalho from "./ModalCabecalho";
 import ModalConteudo from "./ModalConteudo";
 import "./Modal.css";
+import { useCallback, useRef } from "react";
 
 interface ModalProps extends React.HTMLProps<HTMLDialogElement> {
   estaAberta: boolean;
@@ -9,6 +10,23 @@ interface ModalProps extends React.HTMLProps<HTMLDialogElement> {
 }
 
 const Modal = ({ fecharModal, estaAberta, ariaLabel, ...rest }: ModalProps) => {
+  const modalRef = useRef<HTMLDialogElement>(null);
+
+  const escutadorTecla = useCallback(
+    (evento: KeyboardEvent) => {
+      if (evento.key === "Escape") {
+        fecharModal();
+      }
+    },
+    [fecharModal]
+  );
+
+  const capturarFoco = useCallback((evento: FocusEvent) => {
+    if (!modalRef.current?.contains(evento.target as Node)) {
+      modalRef.current?.focus();
+    }
+  }, []);
+
   return (
     <>
       <div className="modal__overlay" onClick={fecharModal} />
@@ -18,6 +36,7 @@ const Modal = ({ fecharModal, estaAberta, ariaLabel, ...rest }: ModalProps) => {
         open={estaAberta}
         onClose={fecharModal}
         {...rest}
+        ref={modalRef}
       >
         <ModalCabecalho aoFechar={fecharModal} />
         <ModalConteudo aoFechar={fecharModal} />
