@@ -2,9 +2,10 @@ import "./Inscricao.css";
 import Botao from "@/componentes/Botao";
 import CampoDigitacao from "@/componentes/CampoDigitacao";
 import Tipografia from "@/componentes/Tipografia";
-import { ChangeEvent, FormEvent, useRef, useState } from "react";
+import { ChangeEvent, FormEvent, useId, useRef, useState } from "react";
 
 const Inscricao = () => {
+  const campoDigitacaoId = useId();
   const campoDigitacaoRef = useRef<HTMLInputElement | null>(null);
   const [erro, setErro] = useState("");
   const [valorCampo, setValorCampo] = useState("");
@@ -15,6 +16,7 @@ const Inscricao = () => {
 
       if (valorDoCampo.length < 5) {
         setErro("O campo deve ter pelo menos 5 caracteres");
+        campoDigitacaoRef.current.focus();
       } else {
         setErro("");
       }
@@ -50,9 +52,11 @@ const Inscricao = () => {
           className="secao__inscricao--formulario"
         >
           <CampoDigitacao
+            id={campoDigitacaoId}
             type="email"
             name="inscricao"
             placeholder="Digite seu melhor endereço de email"
+            erro={erro}
             ref={campoDigitacaoRef}
             onChange={aoMudarCampoForm}
             value={valorCampo}
